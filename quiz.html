@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <link href="styles.css" rel="stylesheet"></link>
+</head>
+<body>
+    <div class="main">
+        <div class="navbar">
+            <div class="left">QuizGrad</div>
+            <div class="right">
+                <a>How it works?</a>
+                <a>Features</a>
+                <a>About us</a>
+                <a>User</a>
+            </div>
+        </div>
+
+        <div class="quizbar">
+            <a id="submitQuiz" href="./results.html">Submit</a>
+        </div>
+        <div class="Qcontent">
+            <div class="question">
+                <div class="top"></div>
+                <div class="bottom"></div>
+            </div>
+
+            <div class="navigation">
+                <button class = "button" id="prev" onclick="handlePrev()">Previous</button>
+                <button class = "button" id="next" onclick="handleNext()">Next</button>
+            </div>
+        </div>
+
+
+    </div>
+    <script src="quizscript.js"></script>
+</body>
+</html>
