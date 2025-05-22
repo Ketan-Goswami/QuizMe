@@ -1,20 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Quiz App</title>
-    <link href="styles.css" rel="stylesheet"></link>
+    <link href="styles.css" rel="stylesheet" />
 </head>
 <body>
     <div class="main">
         <div class="navbar">
-            <div class="left">QuizGrad</div>
+            <div class="left"><a href="index.html" style="text-decoration:none; color:#2c3e50; font-weight:700; font-size:1.8rem;">QuizGrad</a></div>
             <div class="right">
-                <a>How it works?</a>
-                <a>Features</a>
-                <a>About us</a>
-                <a>User</a>
+                <a href="#" id="howItWorksLink">How it works?</a>
+                <a href="#">About us</a>
+                <a href="#">User</a>
+            </div>
+        </div>
+
+        <!-- Modal for How It Works -->
+        <div id="howItWorksModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:10000;">
+            <div style="background:white; padding:2rem; border-radius:10px; max-width:600px; width:90%; max-height:80vh; overflow-y:auto; position:relative;">
+                <button id="closeModalBtn" style="position:absolute; top:10px; right:10px; font-size:1.5rem; background:none; border:none; cursor:pointer;">&times;</button>
+                <h2>How It Works</h2>
+                <h3>Rules</h3>
+                <p>Answer the questions based on selected topics. You must select a minimum of 2 topics.</p>
+                <h3>Topic Selection</h3>
+                <p>Choose topics that interest you to customize your quiz experience.</p>
+                <h3>Mark Scheme and Evaluation</h3>
+                <p>Each correct answer awards points. Your score is calculated at the end of the quiz.</p>
+                <h3>Features</h3>
+                <ul>
+                    <li>Progress tracking</li>
+                    <li>Submit button enabled only after all questions answered</li>
+                    <li>Review your score and retake quizzes</li>
+                </ul>
             </div>
         </div>
 
@@ -23,11 +42,13 @@
                 <span>You scored : </span><span id="scoreSpan"></span> 
             </div>
             <div class="redirect">
+                <button id="retakeBtn">Retake Quiz</button>
+                <button id="homeBtn">Go to Home</button>
             </div>
         </div>
-
     </div>
 
     <script src="resultScript.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
