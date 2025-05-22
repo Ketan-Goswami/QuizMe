@@ -146,150 +146,200 @@ let quizData = [
     }
 ];
 
-
 let questions = []
 let userAnswers = []
 let score = 0
 
 const data = localStorage.getItem('data')
 
-console.log(data)
-
-quizData.filter((question)=>{
-    if(data.includes(question.category)){
-        const temp  = question.questions;
+quizData.filter((question) => {
+    if (data.includes(question.category)) {
+        const temp = question.questions;
         questions.push(...temp);
     }
 })
 
-//console.log(questions)
-
-
 const questionContainer = document.getElementsByClassName("top")
 const optionsContainer = document.getElementsByClassName("bottom")
 const resultLinker = document.getElementById("submitQuiz");
+const progressIndicator = document.getElementById("progressIndicator");
+const prevBtn = document.getElementById("prev");
+const nextBtn = document.getElementById("next");
 
-let index  = -1;
+let index = -1;
+let attemptedCount = 0; // Track number of attempted questions
 
 const Qnode = document.createElement('p');
-Qnode.setAttribute("class","quest")
+Qnode.setAttribute("class", "quest")
 questionContainer[0].appendChild(Qnode);
 
 handleNext();
 
-function handleNext()
-{
-    if(index+1<=questions.length-1){
+function updateProgress() {
+    // Count how many questions have been attempted
+    attemptedCount = userAnswers.filter(ans => ans !== undefined).length;
+    progressIndicator.textContent = `Question ${index + 1} of ${questions.length} | Attempted ${attemptedCount} of ${questions.length}`;
+}
+
+function updateNavButtons() {
+    prevBtn.disabled = index === 0;
+
+    if (index === questions.length - 1) {
+        nextBtn.style.display = 'none';
+        nextBtn.disabled = true;
+        if(resultLinker){
+            resultLinker.style.display = 'inline-block';
+            // Highlight submit button only if all questions attempted
+            if(attemptedCount === questions.length){
+                resultLinker.classList.add('highlight-submit');
+                resultLinker.style.pointerEvents = 'auto';
+            } else {
+                resultLinker.classList.remove('highlight-submit');
+                resultLinker.style.pointerEvents = 'none';
+            }
+        }
+    } else {
+        nextBtn.style.display = 'inline-block';
+        nextBtn.disabled = false;
+        if(resultLinker){
+            resultLinker.style.display = 'none';
+            resultLinker.classList.remove('highlight-submit');
+            resultLinker.style.pointerEvents = 'auto';
+        }
+        nextBtn.style.backgroundColor = '#f1c40f';
+        nextBtn.style.color = '#2c3e50';
+        nextBtn.style.fontWeight = '700';
+    }
+}
+
+function handleNext() {
+    if (index + 1 <= questions.length - 1) {
         index++;
     }
 
-    //Question rendering
+    // Question rendering
     const newQnode = document.getElementsByClassName("quest")
     newQnode[0].innerHTML = questions[index].question
-    
-    //Ans
-    const ans = questions[index].answer;
-    const qid  = questions[index].id;
 
-    //Options rendering
-    
+    // Ans
+    const ans = questions[index].answer;
+    const qid = questions[index].id;
+
+    // Options rendering
     const OptionValues = questions[index].options;
 
-        //empty option container...
-    while(optionsContainer[0].firstChild){
+    // empty option container...
+    while (optionsContainer[0].firstChild) {
         const child = optionsContainer[0].firstChild;
         optionsContainer[0].removeChild(child)
     }
 
     OptionValues.forEach(() => {
         const Opnode = document.createElement('div');
-        Opnode.setAttribute("class","options")
+        Opnode.setAttribute("class", "options")
         optionsContainer[0].appendChild(Opnode);
     });
-    
+
     let idx = 0;
     const Newoptions = document.getElementsByClassName('options');
-    
+
     OptionValues.forEach(value => {
         Newoptions[idx].innerHTML = value
         idx++;
     });
 
-    for (let index = 0; index < Newoptions.length; index++) {   
+    for (let index = 0; index < Newoptions.length; index++) {
         const element = Newoptions[index];
-        element.addEventListener('click',()=>handleScore(Newoptions,element,ans,qid))
+        element.addEventListener('click', () => handleScore(Newoptions, element, ans, qid))
     }
+
+    updateProgress();
+    updateNavButtons();
+    applyTransition();
 }
 
-function handlePrev(){
-    if(index-1>=0){
+function handlePrev() {
+    if (index - 1 >= 0) {
         index--;
     }
-    //Question rendering
+    // Question rendering
     const newQnode = document.getElementsByClassName("quest")
     newQnode[0].innerHTML = questions[index].question
-    
-    //Ans
-    const ans = questions[index].answer;
-    const qid  = questions[index].id;
 
-    //Options rendering
-    
+    // Ans
+    const ans = questions[index].answer;
+    const qid = questions[index].id;
+
+    // Options rendering
     const OptionValues = questions[index].options;
 
-        //empty option container...
-    while(optionsContainer[0].firstChild){
+    // empty option container...
+    while (optionsContainer[0].firstChild) {
         const child = optionsContainer[0].firstChild;
         optionsContainer[0].removeChild(child)
     }
 
     OptionValues.forEach(() => {
         const Opnode = document.createElement('div');
-        Opnode.setAttribute("class","options")
+        Opnode.setAttribute("class", "options")
         optionsContainer[0].appendChild(Opnode);
     });
-    
+
     let idx = 0;
     const Newoptions = document.getElementsByClassName('options');
-    
+
     OptionValues.forEach(value => {
         Newoptions[idx].innerHTML = value
         idx++;
     });
 
-    for (let index = 0; index < Newoptions.length; index++) {   
+    for (let index = 0; index < Newoptions.length; index++) {
         const element = Newoptions[index];
-        element.addEventListener('click',()=>{
-            handleScore(Newoptions,element,ans,qid);
+        element.addEventListener('click', () => {
+            handleScore(Newoptions, element, ans, qid);
         })
     }
-   
+
+    updateProgress();
+    updateNavButtons();
+    applyTransition();
 }
 
-function handleScore(allNodes,ans,solution,qid)
-{
-    for (let index = 0; index < allNodes.length; index++) {   
+function handleScore(allNodes, ans, solution, qid) {
+    for (let index = 0; index < allNodes.length; index++) {
         const element = allNodes[index];
         element.classList.remove("answerSelection")
     }
     ans.classList.add("answerSelection")
-    userAnswers[qid] = [ans.innerHTML,solution]
+    userAnswers[qid] = [ans.innerHTML, solution]
+    updateProgress();
+    updateNavButtons();
 }
 
-
+function applyTransition() {
+    const questionDiv = document.querySelector('.question');
+    questionDiv.style.opacity = 0;
+    setTimeout(() => {
+        questionDiv.style.opacity = 1;
+    }, 200);
+}
 
 // score calculation
-resultLinker.addEventListener('click',()=>{
-    
-    console.log(userAnswers)
+resultLinker.addEventListener('click', (event) => {
+    if (!confirm("Are you sure you want to submit the quiz?")) {
+        event.preventDefault();
+        return;
+    }
 
-    userAnswers.forEach((e)=>{
-        if(e){
-            if(e[0]==e[1]){
+    score = 0;
+    userAnswers.forEach((e) => {
+        if (e) {
+            if (e[0] == e[1]) {
                 score++;
             }
         }
     })
 
     localStorage.score = score;
-})
+    localStorage.totalQuestions = questions.length;
+});
