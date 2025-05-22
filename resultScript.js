@@ -1,19 +1,24 @@
-const score = localStorage.getItem('score');
+document.addEventListener('DOMContentLoaded', () => {
+    const scoreSpan = document.getElementById('scoreSpan');
+    const retakeBtn = document.getElementById('retakeBtn');
+    const homeBtn = document.getElementById('homeBtn');
 
-const scoreSpan = document.getElementById('scoreSpan')
-const scoreCard = document.getElementsByClassName('scoreCard')
+    // Assuming score and totalQuestions are stored in localStorage or passed somehow
+    const score = parseInt(localStorage.getItem('score')) || 0;
+    const totalQuestions = parseInt(localStorage.getItem('totalQuestions')) || 0;
 
-    if(score>1)
-        scoreSpan.innerHTML = score + " points";
-    else if(score<=1){
-        scoreSpan.innerHTML = score?score:"-" + " point";
-    }
+    scoreSpan.textContent = `${score} out of ${totalQuestions}`;
 
+    retakeBtn.addEventListener('click', () => {
+        // Clear previous quiz data if needed
+        localStorage.removeItem('score');
+        localStorage.removeItem('totalQuestions');
+        // Redirect to topic page to start quiz again
+        window.location.href = './topicPage.html';
+    });
 
-    const tag = document.createElement('a');
-    tag.setAttribute("class","tag")
-    tag.setAttribute("href","./topicPage.html")
-    tag.innerHTML="Click to Retake Quiz";
-    scoreCard[0].appendChild(tag)
-    
-localStorage.clear()
+    homeBtn.addEventListener('click', () => {
+        // Redirect to home page
+        window.location.href = './index.html';
+    });
+});
